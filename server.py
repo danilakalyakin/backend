@@ -8,7 +8,7 @@ app = FastAPI(title="Backend API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],       
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -26,6 +26,15 @@ async def save_data(payload: TextPayload):
     with DATA_FILE.open("a", encoding="utf-8") as f:
         f.write(payload.text + "\n")
     return {"message": "Данные сохранены"}
+
+
+@app.get("/api/data")
+async def get_data():
+    """Вернуть содержимое data.txt."""
+    if not DATA_FILE.exists():
+        return {"content": ""}
+    content = DATA_FILE.read_text(encoding="utf-8")
+    return {"content": content}
 
 
 if __name__ == "__main__":
